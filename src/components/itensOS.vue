@@ -27,7 +27,8 @@
                         </thead>
                         <tbody>
                             <tr id="1" v-for="(row) in rows" :key="row.id" @click="mark(row.id)" :class="row.style">
-                                <td><input type="text" v-model="row.produto" maxlength="5"></td>
+                                <td><input type="text" v-model="row.produto" maxlength="5"
+                                        @keyup.f1="consultaPadrao('produto',row.id)"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
                                 <td><input type="number" v-model="row.quantidade"></td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
@@ -90,16 +91,23 @@
                 </div>
             </div>
         </div>
+        <consultaPadrao v-show="isModalVisible" @close="closeModal" @select="select"></consultaPadrao>
     </div>
 </template>
 <script>
+import consultaPadrao from './consultaPadrao.vue'
 export default {
     name: 'itensOS',
+    components: {
+        consultaPadrao
+    },
     data() {
         return {
             index: 0,
             rows: [],
             totalQtdRows: 0,
+            isModalVisible: false,
+            return:{}
         }
     },
     methods: {
@@ -120,10 +128,9 @@ export default {
             });
         },
         addRow() {
-            console.log(this.rows)
             if (this.validNewRow(this.rows)) {
                 this.rows.push({
-                    id: ++this.index,
+                    id: this.index++,
                     produto: "",
                     lote: "",
                     quantidade: 0,
@@ -138,7 +145,6 @@ export default {
             rows.forEach(rows => {
                 if ((rows.produto | rows.lote | rows.quantidade | rows.local) == "" | 0) {
                     lRet = false
-
                 }
             });
             return lRet
@@ -151,12 +157,25 @@ export default {
             return qtdTotal
         },
         deleteRow() {
-            var index
+            var index = 0
             this.rows.forEach(row => {
-                if (row.select == true) {
-                    index = this.rows.find(element => element.id == row.id);
-                    this.rows.splice(index, 1)
-
+                if (row.select === true) {
+                    this.rows.splice(index++, 1)
+                }
+                index++
+            });
+        },
+        consultaPadrao(table,id) {
+            console.log(table + id)
+            this.isModalVisible = true;
+        },
+        closeModal() {
+            this.isModalVisible = false;
+        },
+        select(payload){
+            this.rows.forEach(row => {
+                if(row.select == true){
+                    row.produto = payload.produto
                 }
             });
         }
@@ -167,11 +186,10 @@ export default {
 .input>td>input {
     pointer-events: none;
 }
-
 tr>td>input {
     width: 100%;
 }
-
 tr>td {
     width: 25%;
-}</style>
+}
+</style>
