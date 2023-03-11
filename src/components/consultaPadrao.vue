@@ -69,7 +69,10 @@ export default {
         },
         select(){
             this.$emit('select',{
-                produto:"99999"
+                produto:"99999",
+                lote: "333333",
+                quantidade: 150000,
+                local: "05"
             })
             this.close()
         }

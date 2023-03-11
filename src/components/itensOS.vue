@@ -28,9 +28,9 @@
                         <tbody>
                             <tr id="1" v-for="(row) in rows" :key="row.id" @click="mark(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"
-                                        @keyup.f1="consultaPadrao('produto',row.id)"></td>
+                                        @keyup.f1="consultaPadrao('produto', row.id)"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="number" v-model="row.quantidade"></td>
+                                <td><input type="text" class="text-end" v-model="row.quantidade" v-money3="config"></td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
                         </tbody>
@@ -96,6 +96,7 @@
 </template>
 <script>
 import consultaPadrao from './consultaPadrao.vue'
+import { Money3Directive, format} from 'v-money3'
 export default {
     name: 'itensOS',
     components: {
@@ -107,7 +108,20 @@ export default {
             rows: [],
             totalQtdRows: 0,
             isModalVisible: false,
-            return:{}
+            return: {},
+            config: {
+                prefix: '',
+                suffix: '',
+                thousands: ',',
+                decimal: '.',
+                precision: 4,
+                disableNegative: false,
+                disabled: false,
+                min: null,
+                max: null,
+                allowBlank: false,
+                minimumNumberOfCharacters: 0,
+            }
         }
     },
     methods: {
@@ -133,7 +147,7 @@ export default {
                     id: this.index++,
                     produto: "",
                     lote: "",
-                    quantidade: 0,
+                    quantidade: 0.00,
                     local: "",
                     select: false,
                     style: ""
@@ -150,11 +164,11 @@ export default {
             return lRet
         },
         totalRow() {
-            var qtdTotal = 0
+            let qtdTotal = 0
             this.rows.forEach(row => {
                 qtdTotal += row.quantidade
             });
-            return qtdTotal
+            return format(qtdTotal,this.config)
         },
         deleteRow() {
             var index = 0
@@ -165,30 +179,36 @@ export default {
                 index++
             });
         },
-        consultaPadrao(table,id) {
+        consultaPadrao(table, id) {
             console.log(table + id)
             this.isModalVisible = true;
         },
         closeModal() {
             this.isModalVisible = false;
         },
-        select(payload){
+        select(payload) {
             this.rows.forEach(row => {
-                if(row.select == true){
+                if (row.select == true) {
                     row.produto = payload.produto
+                    row.lote = payload.lote
+                    row.quantidade = payload.quantidade
+                    row.local = payload.local
                 }
             });
         }
-    }
+    },
+    directives: { money3: Money3Directive }
 }
 </script>
 <style>
 .input>td>input {
     pointer-events: none;
 }
+
 tr>td>input {
     width: 100%;
 }
+
 tr>td {
     width: 25%;
 }
