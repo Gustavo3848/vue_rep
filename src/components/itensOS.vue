@@ -110,10 +110,11 @@ export default {
             isModalVisible: false,
             return: {},
             config: {
+                masked: true,
                 prefix: '',
                 suffix: '',
-                thousands: ',',
-                decimal: '.',
+                thousands: '.',
+                decimal: ',',
                 precision: 4,
                 disableNegative: false,
                 disabled: false,
@@ -121,6 +122,7 @@ export default {
                 max: null,
                 allowBlank: false,
                 minimumNumberOfCharacters: 0,
+                shouldround: false
             }
         }
     },
@@ -147,7 +149,7 @@ export default {
                     id: this.index++,
                     produto: "",
                     lote: "",
-                    quantidade: 0.00,
+                    quantidade: 0,
                     local: "",
                     select: false,
                     style: ""
@@ -166,6 +168,7 @@ export default {
         totalRow() {
             let qtdTotal = 0
             this.rows.forEach(row => {
+                console.log(parseFloat(row.quantidade).toFixed(4))
                 qtdTotal += row.quantidade
             });
             return format(qtdTotal,this.config)
