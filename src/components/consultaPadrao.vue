@@ -45,7 +45,6 @@
                             <div class="row justify-content-end">
                                 <div class="col-4 text-end">
                                     <button type="button" class="btn btn-light me-2" @click="close">Cancelar</button>
-                                    <button type="button" class="btn btn-info">Confirmar</button>
                                 </div>
                             </div>
                         </div>
