@@ -30,7 +30,8 @@
                                 <td><input type="text" v-model="row.produto" maxlength="5"
                                         @keyup.f1="consultaPadrao('produto', row.id)"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="text" class="text-end" v-model="row.quantidade" v-money3="config"></td>
+                                <td><input type="text" class="text-end" v-model="row.quantidade">
+                                </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
                         </tbody>
@@ -75,7 +76,8 @@
                             <tr id="1" v-for="(row) in rowsRes" :key="row.id" @click="markRes(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="text" class="text-end" v-model="row.quantidade" v-money3="config"></td>
+                                <td><input type="text" class="text-end" v-model="row.quantidade" v-mask-number>
+                                </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
                         </tbody>
@@ -96,7 +98,6 @@
 </template>
 <script>
 import consultaPadrao from './consultaPadrao.vue'
-import { Money3Directive } from 'v-money3'
 export default {
     name: 'itensOS',
     components: {
@@ -112,19 +113,7 @@ export default {
             rows: this.emp,
             rowsRes: this.res,
             isModalVisible: false,
-            return: {},
-            config: {
-                masked: true,
-                prefix: '',
-                suffix: '',
-                thousands: '.',
-                decimal: ',',
-                precision: 4,
-                disableNegative: false,
-                disabled: false,
-                min: 0,
-                max: null,
-            }
+            return: {}
         }
     },
     methods: {
@@ -166,12 +155,8 @@ export default {
             });
             return lRet
         },
-        totalRow(rows) {
+        totalRow() {
             let qtd = 0
-            const result = rows.map(x => x.quantidade.replace(',', ''));
-            result.forEach(element => {
-                qtd += parseInt(element.quantidade)
-            })
             return qtd
         },
         deleteRow() {
@@ -243,8 +228,7 @@ export default {
                 index++
             });
         }
-    },
-    directives: { money3: Money3Directive }
+    }
 }
 </script>
 <style>

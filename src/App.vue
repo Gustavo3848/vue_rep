@@ -5,7 +5,6 @@
 </template>
 <script>
 import cabOS from './components/cabOS.vue'
-
 export default {
   name: 'App',
   components: {

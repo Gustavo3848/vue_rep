@@ -12,7 +12,6 @@
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "core-js": "^3.8.3",
-    "v-money3": "^3.23.0",
     "vue": "^3.2.13"
   },
   "devDependencies": {

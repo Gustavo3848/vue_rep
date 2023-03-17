@@ -1,11 +1,13 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap-icons/font/bootstrap-icons.css"
-//import money from 'v-money3'
+import VueMask from '@devindex/vue-mask'; // <-- ADD THIS LINE
 import { createApp } from 'vue'
 import App from './App.vue'
 
+const app = createApp(App)
 
-createApp(App).mount('#app')
-//App.use(money)
+app.use(VueMask)
+
+app.mount('#app')
 
 import "bootstrap/dist/js/bootstrap.js"
