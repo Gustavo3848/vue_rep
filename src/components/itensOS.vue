@@ -76,7 +76,7 @@
                             <tr id="1" v-for="(row) in rowsRes" :key="row.id" @click="markRes(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="text" class="text-end" v-model="row.quantidade" v-mask-number>
+                                <td><input type="text" class="text-end" v-model="row.quantidade">
                                 </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
