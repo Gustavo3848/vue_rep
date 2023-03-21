@@ -53,6 +53,7 @@
 </template>
 <script>
 import itensOS from './itensOS.vue'
+import axios from 'axios'
 export default {
     name: 'cabOS',
     data() {
@@ -76,12 +77,31 @@ export default {
     methods: {
         confirmar() {
             var res = {
-                cab: this.cab,
+                cab: {
+                    numeroOS: this.cab.numeroOS,
+                    local: this.cab.local,
+                    dtEmissao: this.convertDate(this.cab.dtEmissao),
+                    dtPrevisao: this.convertDate(this.cab.dtPrevisao),
+                    dtEntrega: this.convertDate(this.cab.dtEntrega),
+                    observacao: this.cab.observacao,
+                },
                 empenhos: this.rowsEmp,
-                resultados:  this.rowsRes
+                resultados: this.rowsRes
             }
             console.log(res)
+        },
+        convertDate(date) {
+            let day = date.substring(8, 10);
+            let month = date.substring(5, 7);
+            let year = date.substring(0, 4);
+            return day + "/" + month + "/" + year
         }
+    }, 
+    mounted() {
+        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
+            .then((response) => {
+                console.log(response)
+            })
     }
 }
 </script>

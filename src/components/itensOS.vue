@@ -28,9 +28,9 @@
                         <tbody>
                             <tr id="1" v-for="(row) in rows" :key="row.id" @click="mark(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"
-                                        @keyup.f1="consultaPadrao('produto', row.id)"></td>
+                                        @keyup.f2="consultaPadrao('produto', row.id)"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="text" class="text-end" v-model="row.quantidade">
+                                <td><input type="number" class="text-end" v-model="row.quantidade">
                                 </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
@@ -76,7 +76,7 @@
                             <tr id="1" v-for="(row) in rowsRes" :key="row.id" @click="markRes(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="text" class="text-end" v-model="row.quantidade">
+                                <td><input type="number" class="text-end" v-model="row.quantidade">
                                 </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
@@ -139,7 +139,7 @@ export default {
                     id: this.index++,
                     produto: "",
                     lote: "",
-                    quantidade: "",
+                    quantidade: 0,
                     local: "",
                     select: false,
                     style: ""
@@ -155,8 +155,11 @@ export default {
             });
             return lRet
         },
-        totalRow() {
+        totalRow(rows) {
             let qtd = 0
+            rows.forEach(element => {
+                qtd += element.quantidade
+            });
             return qtd
         },
         deleteRow() {
@@ -196,7 +199,7 @@ export default {
                     id: this.indexRes++,
                     produto: "",
                     lote: "",
-                    quantidade: "",
+                    quantidade: 0,
                     local: "",
                     select: false,
                     style: ""
