@@ -18,25 +18,26 @@
                             </div>
                             <hr>
                             <div class="d-grid gap-1 mb-3">
-                                <input type="text">
+                                <input type="text" v-model="search">
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <table class="table table-sm">
+                                    <table class="table table-sm scrolldown">
                                         <thead>
                                             <tr>
                                                 <th>Produto</th>
                                                 <th>Lote</th>
                                                 <th>Quantidade</th>
-                                                <th>Local</th>
+                                                <th class="text-center">Local</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr @dblclick="select">
-                                                <td>02087</td>
-                                                <td>E-285510</td>
-                                                <td class="text-end">1.500,0000</td>
-                                                <td>02</td>
+                                            <tr @dblclick="select(lote)" v-for="(lote) in filteredItems()"
+                                                :key="lote.produto + lote.lote">
+                                                <td>{{ lote.produto }}</td>
+                                                <td>{{ lote.lote }}</td>
+                                                <td class="text-end">{{ $filters.sldFilter(lote.saldo) }}</td>
+                                                <td class="text-center">{{ lote.local }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -55,30 +56,50 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
     name: 'consultaPadrao',
     data() {
         return {
-            return:{}
+            return: {
+                lotes: [],
+                search: ""
+            }
         }
     },
     methods: {
         close() {
             this.$emit('close');
         },
-        select(){
-            this.$emit('select',{
-                produto:"99999",
-                lote: "333333",
-                quantidade: 150000,
-                local: "05"
+        select(lote) {
+            this.$emit('select', {
+                produto: lote.produto,
+                lote: lote.lote,
+                quantidade: lote.saldo,
+                local: lote.local
             })
             this.close()
         }
     },
+    mounted() {
+        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
+            .then((response) => {
+                this.lotes = response.data.data
+            })
+    }, computed: {
+       filteredItems() {
+            if (this.search == "") {
+                return this.lotes
+            } else {
+                return this.lotes.filter(item => {
+                    return item.lote.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                })
+            }
+        }
+    }
 }
 </script>
-<style>
+<style scoped>
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -141,5 +162,37 @@ export default {
     background: #4AAE9B;
     border: 1px solid #4AAE9B;
     border-radius: 2px;
+}
+
+
+table.scrolldown {
+    width: 100%;
+
+    /* border-collapse: collapse; */
+    border-spacing: 0;
+}
+
+/* To display the block as level element */
+table.scrolldown tbody,
+table.scrolldown thead {
+    display: block;
+}
+
+table.scrolldown tbody {
+
+    /* Set the height of table body */
+    height: 250px;
+
+    /* Set vertical scroll */
+    overflow-y: 15px;
+
+    /* Hide the horizontal scroll */
+    overflow-x: hidden;
+}
+
+
+tbody td,
+thead th {
+    width: 230px;
 }
 </style>

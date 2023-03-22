@@ -53,7 +53,7 @@
 </template>
 <script>
 import itensOS from './itensOS.vue'
-import axios from 'axios'
+
 export default {
     name: 'cabOS',
     data() {
@@ -97,12 +97,7 @@ export default {
             return day + "/" + month + "/" + year
         }
     }, 
-    mounted() {
-        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
-            .then((response) => {
-                console.log(response)
-            })
-    }
+
 }
 </script>
 <style></style>

@@ -30,7 +30,7 @@
                                 <td><input type="text" v-model="row.produto" maxlength="5"
                                         @keyup.f2="consultaPadrao('produto', row.id)"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="number" class="text-end" v-model="row.quantidade">
+                                <td><input type="number" class="text-end" v-model="row.quantidade" step=".0001">
                                 </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
@@ -41,7 +41,7 @@
                             <h3 class="fs-5">TOTAL EMPENHADO</h3>
                         </div>
                         <div class="col-2 text-end">
-                            <h3 class="fs-5">{{ totalRow(this.rows) }}</h3>
+                            <h3 class="fs-5">{{ $filters.sldFilter(totalRow(this.rows)) }}</h3>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                             <tr id="1" v-for="(row) in rowsRes" :key="row.id" @click="markRes(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
-                                <td><input type="number" class="text-end" v-model="row.quantidade">
+                                <td><input type="number" class="text-end" v-model="row.quantidade" step=".0001">
                                 </td>
                                 <td><input type="text" v-model="row.local" maxlength="2"></td>
                             </tr>
@@ -87,7 +87,7 @@
                             <h3 class="fs-5">TOTAL RESULTADO</h3>
                         </div>
                         <div class="col-2 text-end">
-                            <h3 class="fs-5">{{ totalRow(this.rowsRes) }}</h3>
+                            <h3 class="fs-5">{{ $filters.sldFilter(totalRow(this.rowsRes)) }}</h3>
                         </div>
                     </div>
                 </div>
