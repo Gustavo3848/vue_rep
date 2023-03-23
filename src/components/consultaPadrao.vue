@@ -32,7 +32,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr @dblclick="select(lote)" v-for="(lote) in filteredItems()"
+                                            <tr @dblclick="select(lote)" v-for="lote in  filteredLotes"
                                                 :key="lote.produto + lote.lote">
                                                 <td>{{ lote.produto }}</td>
                                                 <td>{{ lote.lote }}</td>
@@ -56,14 +56,14 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
+
 export default {
     name: 'consultaPadrao',
+    props: ["lotes"],
     data() {
         return {
             return: {
-                lotes: [],
-                search: ""
+                search: undefined || ""
             }
         }
     },
@@ -80,21 +80,11 @@ export default {
             })
             this.close()
         }
-    },
-    mounted() {
-        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
-            .then((response) => {
-                this.lotes = response.data.data
-            })
     }, computed: {
-       filteredItems() {
-            if (this.search == "") {
-                return this.lotes
-            } else {
-                return this.lotes.filter(item => {
-                    return item.lote.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-                })
-            }
+        filteredLotes() {
+            return this.lotes.filter(lote => {
+                return lote.lote.toLowerCase().includes(this.search.toLowerCase())
+            });
         }
     }
 }

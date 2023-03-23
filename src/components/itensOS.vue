@@ -93,11 +93,12 @@
                 </div>
             </div>
         </div>
-        <consultaPadrao v-show="isModalVisible" @close="closeModal" @select="select"></consultaPadrao>
+        <consultaPadrao v-show="isModalVisible" @close="closeModal" @select="select" :lotes="lotes" ></consultaPadrao>
     </div>
 </template>
 <script>
 import consultaPadrao from './consultaPadrao.vue'
+import axios from 'axios'
 export default {
     name: 'itensOS',
     components: {
@@ -113,7 +114,8 @@ export default {
             rows: this.emp,
             rowsRes: this.res,
             isModalVisible: false,
-            return: {}
+            return: {}, 
+            lotes: []
         }
     },
     methods: {
@@ -231,6 +233,14 @@ export default {
                 index++
             });
         }
+    },
+    mounted() {
+        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
+            .then((response) => {
+                this.lotes = response.data.data
+            }).catch(error => {
+                console.log(error);
+            });
     }
 }
 </script>

@@ -53,7 +53,6 @@
 </template>
 <script>
 import itensOS from './itensOS.vue'
-
 export default {
     name: 'cabOS',
     data() {
@@ -68,7 +67,9 @@ export default {
             },
             rowsEmp: [],
             rowsRes: [],
-            totais: { qtdEmp: 0, qtdRes: 0 }
+            totais: { qtdEmp: 0, qtdRes: 0 },
+            lotes: []
+
         }
     },
     components: {
@@ -96,8 +97,7 @@ export default {
             let year = date.substring(0, 4);
             return day + "/" + month + "/" + year
         }
-    }, 
-
+    }
 }
 </script>
 <style></style>
