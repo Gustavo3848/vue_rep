@@ -8,7 +8,7 @@
                             <div class="row align-items-center">
                                 <div class="col">
                                     <h5>
-                                        Consulta Padrão - Produtos
+                                        Consulta Padrão - Locais
                                     </h5>
                                 </div>
                                 <div class="col text-end">
@@ -25,19 +25,14 @@
                                     <table class="table table-sm scrolldown">
                                         <thead>
                                             <tr>
-                                                <th>Produto</th>
-                                                <th>Lote</th>
-                                                <th>Quantidade</th>
-                                                <th class="text-center">Local</th>
+                                                <th class="text-center">Codigo</th>
+                                                <th colspan="3">Descrição</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr @dblclick="select(lote)" v-for="lote in lotes"
-                                                :key="lote.produto + lote.lote">
-                                                <td>{{ lote.produto }}</td>
-                                                <td>{{ lote.lote }}</td>
-                                                <td class="text-end">{{ $filters.sldFilter(lote.saldo) }}</td>
-                                                <td class="text-center">{{ lote.local }}</td>
+                                            <tr @dblclick="select(local)" v-for="local in locais" :key="local.codigo">
+                                                <td class="text-center">{{ local.codigo }}</td>
+                                                <td colspan="3">{{ local.descricao }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -58,8 +53,8 @@
 <script>
 
 export default {
-    name: 'consultaPadrao',
-    props: ["lotes"],
+    name: 'consultaLocais',
+    props: ["locais"],
     data() {
         return {
             return: {
@@ -71,17 +66,12 @@ export default {
         close() {
             this.$emit('close');
         },
-        select(lote) {
+        select(local) {
             this.$emit('select', {
-                produto: lote.produto,
-                lote: lote.lote,
-                quantidade: lote.saldo,
-                local: lote.local
+                local
             })
             this.close()
         }
-    }, computed: {
-
     }
 }
 </script>
@@ -179,6 +169,6 @@ table.scrolldown tbody {
 
 tbody td,
 thead th {
-    width: 20rem;
+  width: 20rem;
 }
 </style>

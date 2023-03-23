@@ -28,7 +28,7 @@
                         <tbody>
                             <tr id="1" v-for="(row) in rows" :key="row.id" @click="mark(row.id)" :class="row.style">
                                 <td><input type="text" v-model="row.produto" maxlength="5"
-                                        @keyup.f2="consultaPadrao('produto', row.id)"></td>
+                                        @keyup.f2="consultaPadrao()"></td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
                                 <td><input type="number" class="text-end" v-model="row.quantidade" step=".0001">
                                 </td>
@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <consultaPadrao v-show="isModalVisible" @close="closeModal" @select="select" :lotes="lotes" ></consultaPadrao>
+        <consultaPadrao v-show="isModalVisible" @close="closeModal" @select="select" :lotes="lotes"></consultaPadrao>
     </div>
 </template>
 <script>
@@ -114,8 +114,9 @@ export default {
             rows: this.emp,
             rowsRes: this.res,
             isModalVisible: false,
-            return: {}, 
-            lotes: []
+            return: {},
+            lotes: [],
+            locais: []
         }
     },
     methods: {
@@ -173,8 +174,7 @@ export default {
                 index++
             });
         },
-        consultaPadrao(table, id) {
-            console.log(table + id)
+        consultaPadrao() {
             this.isModalVisible = true;
         },
         closeModal() {

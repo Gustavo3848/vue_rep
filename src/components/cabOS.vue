@@ -21,9 +21,10 @@
                         <div class="col-auto">
                             <label for="local" class="col-form-label">Local</label>
                             <div class="input-group">
-                                <input type="text" v-model="cab.local" class="form-control form-control-sm"
-                                    aria-describedby="button-addon2" id="local" maxlength="2">
-                                <button class="btn btn-outline-info btn-sm" type="button" id="button-local"><i
+                                <input type="text" v-model="cab.local" @keyup.f2="consultaLocais"
+                                    class="form-control form-control-sm" aria-describedby="button-addon2" id="local"
+                                    maxlength="2">
+                                <button class="btn btn-outline-info btn-sm" type="button" id="button-local" @click="consultaLocais"><i
                                         class="bi bi-search"></i></button>
                             </div>
                         </div>
@@ -50,9 +51,12 @@
         </div>
     </div>
     <itensOS :emp="rowsEmp" :res="rowsRes" />
+    <consultaLocais v-show="isModalVisible" @close="closeModal" @select="select" :locais="locais"></consultaLocais>
 </template>
 <script>
 import itensOS from './itensOS.vue'
+import consultaLocais from './consultaLocais.vue'
+import axios from 'axios'
 export default {
     name: 'cabOS',
     data() {
@@ -68,12 +72,15 @@ export default {
             rowsEmp: [],
             rowsRes: [],
             totais: { qtdEmp: 0, qtdRes: 0 },
-            lotes: []
+            lotes: [],
+            locais:[],
+            isModalVisible: false
 
         }
     },
     components: {
-        itensOS
+        itensOS,
+        consultaLocais
     },
     methods: {
         confirmar() {
@@ -89,6 +96,13 @@ export default {
                 empenhos: this.rowsEmp,
                 resultados: this.rowsRes
             }
+            axios.post('http://34.198.64.95:9988/app/opexecauto',res)
+            .then((response) => {
+                alert("Op criada", response)
+            }).catch(error => {
+                console.log(error);
+            });
+            
             console.log(res)
         },
         convertDate(date) {
@@ -96,8 +110,27 @@ export default {
             let month = date.substring(5, 7);
             let year = date.substring(0, 4);
             return day + "/" + month + "/" + year
+        },
+        consultaLocais() {
+            this.isModalVisible = true;
+        },
+        closeModal() {
+            this.isModalVisible = false;
+        },
+        select(payload) {
+            this.cab.local = payload.local.codigo
+
         }
+    },
+    mounted() {
+        axios.get('http://34.198.64.95:9988/app/locais/FA04')
+            .then((response) => {
+                this.locais = response.data.data
+            }).catch(error => {
+                console.log(error);
+            });
     }
+
 }
 </script>
 <style></style>
