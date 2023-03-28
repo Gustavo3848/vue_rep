@@ -57,7 +57,7 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
-import {QWebChannel} from 'qwebchannel'
+import { QWebChannel } from 'qwebchannel'
 export default {
     name: 'cabOS',
     data() {
@@ -142,6 +142,14 @@ export default {
             socket.onopen = function () {
                 new QWebChannel(socket, function (channel) {
                     console.log(channel)
+                    var dialog = channel.objects.mainDialog;
+
+                    dialog.advplToJs.connect(function (codeType, codeContent, objectName) {
+                        if (codeType == "<script>") {
+                            console.log(codeContent)
+                            this.cFilial = codeContent
+                        }
+                    });
                 });
                 console.log(socket)
             }
