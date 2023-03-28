@@ -99,6 +99,7 @@
 <script>
 import consultaPadrao from './consultaPadrao.vue'
 import axios from 'axios'
+
 export default {
     name: 'itensOS',
     components: {

@@ -57,7 +57,7 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
-import { QWebChannel } from 'qwebchannel'
+import { twebchannel } from '../assets/js/websocket.js'
 export default {
     name: 'cabOS',
     data() {
@@ -123,37 +123,17 @@ export default {
             this.cab.local = payload.local.codigo
 
         },
-        getPort() {
-            var url = window.location.href;
-            var queryField = 'totvstec_websocket_port'
-            queryField = queryField.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig, "\\$&");
-            var regex = new RegExp("[?&]" + queryField + "(=([^&#]*)|&|#|$)", "i"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        },
         webSocket() {
-            var port = this.getPort()
-            var baseUrl = "ws://localhost:" + port;
-            var socket = new WebSocket(baseUrl);
-            socket.onclose = function () { console.error("WebChannel closed"); };
-            socket.onerror = function (error) { console.error("WebChannel error: " + error); };
-            socket.onopen = function () {
-                new QWebChannel(socket, function (channel) {
-                    console.log(channel)
-                    var dialog = channel.objects.mainDialog;
-
-                    dialog.advplToJs.connect(function (codeType, codeContent, objectName) {
-                        if (codeType == "<script>") {
-                            console.log(codeContent)
-                            this.cFilial = codeContent
-                        }
-                    });
-                });
-                console.log(socket)
+            // Fecha conexao entre o AdvPL e o JavaScript via WebSocket
+            twebchannel.connect(() => { console.log('Websocket Connected!'); });
+            twebchannel.advplToJs = function (key, value) {
+                // ----------------------------------------------------------
+                // Insira aqui o tratamento para as mensagens vindas do AdvPL
+                // ----------------------------------------------------------
+                if (key === "<script>") {
+                    console.log(value)
+                }
             }
-            console.log(port)
         }
     },
     mounted() {
