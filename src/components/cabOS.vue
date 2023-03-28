@@ -57,6 +57,7 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
+import QWebChannel from 'qwebchannel'
 export default {
     name: 'cabOS',
     data() {
@@ -139,7 +140,10 @@ export default {
             socket.onclose = function () { console.error("WebChannel closed"); };
             socket.onerror = function (error) { console.error("WebChannel error: " + error); };
             socket.onopen = function () {
-                    console.log(socket)
+                new QWebChannel(socket, function (channel) {
+                    console.log(channel)
+                });
+                console.log(socket)
             }
             console.log(port)
         }
