@@ -131,15 +131,10 @@ export default {
             }).catch(error => {
                 console.log(error);
             });
-
-        twebchannel.connect().then((response) => {
-            console.log(response)
-            twebchannel.advplToJs = function (key, value) {
+        twebchannel.connect(() => { console.log('Websocket Connected!'); });
+        twebchannel.advplToJs = function (key, value) {
                 this.cFilial = value
             }
-        }).catch(error => {
-            console.log(error);
-        });
     }
 
 }
