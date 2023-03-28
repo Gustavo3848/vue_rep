@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h1 class="card-title fs-3">ORDEM DE SERVIÇO - FA04</h1>
+                            <h1 class="card-title fs-3">ORDEM DE SERVIÇO - {{ cFilial }}</h1>
                         </div>
                         <div class="col text-end">
                             <button class="btn btn-info" @click="confirmar()">Confirmar</button>
@@ -24,8 +24,8 @@
                                 <input type="text" v-model="cab.local" @keyup.f2="consultaLocais"
                                     class="form-control form-control-sm" aria-describedby="button-addon2" id="local"
                                     maxlength="2">
-                                <button class="btn btn-outline-info btn-sm" type="button" id="button-local" @click="consultaLocais"><i
-                                        class="bi bi-search"></i></button>
+                                <button class="btn btn-outline-info btn-sm" type="button" id="button-local"
+                                    @click="consultaLocais"><i class="bi bi-search"></i></button>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -57,6 +57,7 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
+import twebchannel from '@totvs/twebchannel-js/twebchannel.js'
 export default {
     name: 'cabOS',
     data() {
@@ -73,8 +74,9 @@ export default {
             rowsRes: [],
             totais: { qtdEmp: 0, qtdRes: 0 },
             lotes: [],
-            locais:[],
-            isModalVisible: false
+            locais: [],
+            isModalVisible: false,
+            cFilial: ""
 
         }
     },
@@ -96,13 +98,13 @@ export default {
                 empenhos: this.rowsEmp,
                 resultados: this.rowsRes
             }
-            axios.post('http://34.198.64.95:9988/app/opexecauto',res)
-            .then((response) => {
-                alert("Op criada", response)
-            }).catch(error => {
-                console.log(error);
-            });
-            
+            axios.post('http://localhost:9988/app/opexecauto', res)
+                .then((response) => {
+                    alert("Op criada", response)
+                }).catch(error => {
+                    console.log(error);
+                });
+
             console.log(res)
         },
         convertDate(date) {
@@ -123,12 +125,21 @@ export default {
         }
     },
     mounted() {
-        axios.get('http://34.198.64.95:9988/app/locais/FA04')
+        axios.get('http://localhost:9988/app/locais/FA04')
             .then((response) => {
                 this.locais = response.data.data
             }).catch(error => {
                 console.log(error);
             });
+
+        twebchannel.connect().then((response) => {
+            console.log(response)
+            twebchannel.advplToJs = function (key, value) {
+                this.cFilial = value
+            }
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
 }

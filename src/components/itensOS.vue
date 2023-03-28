@@ -235,7 +235,7 @@ export default {
         }
     },
     mounted() {
-        axios.get('http://34.198.64.95:9988/app/lotes/FA04')
+        axios.get('http://localhost:9988/app/lotes/FA04')
             .then((response) => {
                 this.lotes = response.data.data
             }).catch(error => {
