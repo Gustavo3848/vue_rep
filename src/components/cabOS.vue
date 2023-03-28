@@ -57,7 +57,6 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
-import twebchannel from '@totvs/twebchannel-js/twebchannel.js'
 export default {
     name: 'cabOS',
     data() {
@@ -122,6 +121,27 @@ export default {
         select(payload) {
             this.cab.local = payload.local.codigo
 
+        },
+        getPort() {
+            var url = window.location.href;
+            var queryField = 'totvstec_websocket_port'
+            queryField = queryField.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig, "\\$&");
+            var regex = new RegExp("[?&]" + queryField + "(=([^&#]*)|&|#|$)", "i"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        },
+        webSocket() {
+            var port = this.getPort()
+            var baseUrl = "ws://localhost:" + port;
+            var socket = new WebSocket(baseUrl);
+            socket.onclose = function () { console.error("WebChannel closed"); };
+            socket.onerror = function (error) { console.error("WebChannel error: " + error); };
+            socket.onopen = function () {
+                    console.log(socket)
+            }
+            console.log(port)
         }
     },
     mounted() {
@@ -131,10 +151,7 @@ export default {
             }).catch(error => {
                 console.log(error);
             });
-        twebchannel.connect(() => { console.log('Websocket Connected!'); });
-        twebchannel.advplToJs = function (key, value) {
-                this.cFilial = value
-            }
+        this.webSocket()
     }
 
 }
