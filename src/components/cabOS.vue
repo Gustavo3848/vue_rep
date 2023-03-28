@@ -57,7 +57,7 @@
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
 import axios from 'axios'
-import QWebChannel from 'qwebchannel'
+import {QWebChannel} from 'qwebchannel'
 export default {
     name: 'cabOS',
     data() {
