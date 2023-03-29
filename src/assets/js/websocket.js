@@ -1,4 +1,3 @@
-import { QWebChannel } from 'qwebchannel'
 var getParam = function(queryField) {
 	var url = window.location.href;
 	queryField = queryField.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig, "\\$&");
