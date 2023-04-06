@@ -11,6 +11,7 @@ app.config.globalProperties.$filters = {
         return x.toFixed(4)
     }
 }
+app.config.globalProperties.$restful = "34.198.64.95"
 app.mount('#app')
 
 import "bootstrap/dist/js/bootstrap.js"

@@ -105,7 +105,7 @@ export default {
     components: {
         consultaPadrao
     },
-    props: ["emp", "res"]
+    props: ["emp", "res", "filial"]
     ,
     data() {
         return {
@@ -236,7 +236,7 @@ export default {
         }
     },
     mounted() {
-        axios.get('http://localhost:9988/app/lotes/FA04')
+        axios.get('http://' + this.$restful + ':9988/app/lotes/' + this.filial)
             .then((response) => {
                 this.lotes = response.data.data
             }).catch(error => {
