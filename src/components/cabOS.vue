@@ -14,6 +14,11 @@
                     <hr>
                     <form class="row g-3">
                         <div class="col-auto">
+                            <label for="numOS" class="col-form-label">Filial</label>
+                            <input type="texte" v-model="cFilial" class="form-control form-control-sm" id="filial"
+                                maxlength="4">
+                        </div>
+                        <div class="col-auto">
                             <label for="numOS" class="col-form-label">Numero OS</label>
                             <input type="texte" v-model="cab.numeroOS" class="form-control form-control-sm" id="numOS"
                                 maxlength="10">
