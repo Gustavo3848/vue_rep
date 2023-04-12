@@ -15,7 +15,7 @@
                     <form class="row g-3">
                         <div class="col-auto">
                             <label for="numOS" class="col-form-label">Filial</label>
-                            <input type="texte" v-model="cFilial" class="form-control form-control-sm" id="filial"
+                            <input type="texte" v-model="cFilial" class="form-control form-control-sm" id="cFilial"
                                 maxlength="4">
                         </div>
                         <div class="col-auto">
@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    <itensOS :emp="rowsEmp" :res="rowsRes" :filial="filial" />
+    <itensOS :emp="rowsEmp" :res="rowsRes" :filial="cFilial" />
     <consultaLocais v-show="isModalVisible" @close="closeModal" @select="select" :locais="locais"></consultaLocais>
 </template>
 <script>
@@ -111,7 +111,6 @@ export default {
                     console.log(error);
                 });
 
-            console.log(res)
         },
         convertDate(date) {
             let day = date.substring(8, 10);
@@ -121,24 +120,25 @@ export default {
         },
         consultaLocais() {
             this.isModalVisible = true;
+            this.execfunct()
+
         },
         closeModal() {
             this.isModalVisible = false;
         },
         select(payload) {
             this.cab.local = payload.local.codigo
-
+        },
+        execfunct() {
+            console.log( this.cFilial)
+            axios.get('http://' + this.$restful + ':9988/app/locais/' + this.cFilial)
+                .then((response) => {
+                    this.locais = response.data.data
+                }).catch(error => {
+                    console.log(error);
+                });
         }
-    },
-    mounted() {
-        axios.get('http://' + this.$restful + ':9988/app/locais/' + this.filial)
-            .then((response) => {
-                this.locais = response.data.data
-            }).catch(error => {
-                console.log(error);
-            });
     }
-
 }
 </script>
 <style></style>

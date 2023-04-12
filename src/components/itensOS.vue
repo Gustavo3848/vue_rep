@@ -27,8 +27,8 @@
                         </thead>
                         <tbody>
                             <tr id="1" v-for="(row) in rows" :key="row.id" @click="mark(row.id)" :class="row.style">
-                                <td><input type="text" v-model="row.produto" maxlength="5"
-                                        @keyup.f2="consultaPadrao()"></td>
+                                <td><input type="text" v-model="row.produto" maxlength="5" @keyup.f2="consultaPadrao()">
+                                </td>
                                 <td><input type="text" v-model="row.lote" maxlength="10"></td>
                                 <td><input type="number" class="text-end" v-model="row.quantidade" step=".0001">
                                 </td>
@@ -177,6 +177,7 @@ export default {
         },
         consultaPadrao() {
             this.isModalVisible = true;
+            this.execConsultLote()
         },
         closeModal() {
             this.isModalVisible = false;
@@ -233,15 +234,16 @@ export default {
                 }
                 index++
             });
+        },
+        execConsultLote() {
+            console.log(this.filial)
+            axios.get('http://' + this.$restful + ':9988/app/lotes/' + this.filial)
+                .then((response) => {
+                    this.lotes = response.data.data
+                }).catch(error => {
+                    console.log(error);
+                });
         }
-    },
-    mounted() {
-        axios.get('http://' + this.$restful + ':9988/app/lotes/' + this.filial)
-            .then((response) => {
-                this.lotes = response.data.data
-            }).catch(error => {
-                console.log(error);
-            });
     }
 }
 </script>
