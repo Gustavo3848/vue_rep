@@ -5,7 +5,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <h1 class="card-title fs-3">ORDEM DE SERVIÇO - {{ cFilial }}</h1>
+                            <h1 class="card-title fs-3">ORDEM DE SERVIÇO - {{ cab.filial }}</h1>
                         </div>
                         <div class="col text-end">
                             <button class="btn btn-info" @click="confirmar()">Confirmar</button>
@@ -15,7 +15,7 @@
                     <form class="row g-3">
                         <div class="col-auto">
                             <label for="numOS" class="col-form-label">Filial</label>
-                            <input type="texte" v-model="cFilial" class="form-control form-control-sm" id="cFilial"
+                            <input type="texte" v-model="cab.filial" class="form-control form-control-sm" id="cFilial"
                                 maxlength="4">
                         </div>
                         <div class="col-auto">
@@ -54,8 +54,11 @@
                 </div>
             </div>
         </div>
+        <div class="spin">
+            <div v-show="load" class="lds-dual-ring"></div>
+        </div>
     </div>
-    <itensOS :emp="rowsEmp" :res="rowsRes" :filial="cFilial" />
+    <itensOS :emp="rowsEmp" :res="rowsRes" :filial="cab.filial" />
     <consultaLocais v-show="isModalVisible" @close="closeModal" @select="select" :locais="locais"></consultaLocais>
 </template>
 <script>
@@ -81,7 +84,8 @@ export default {
             lotes: [],
             locais: [],
             isModalVisible: false,
-            cFilial: ""
+            load: false
+
 
         }
     },
@@ -99,16 +103,19 @@ export default {
                     dtPrevisao: this.convertDate(this.cab.dtPrevisao),
                     dtEntrega: this.convertDate(this.cab.dtEntrega),
                     observacao: this.cab.observacao,
-                    filial: this.filial
+                    filial: this.cab.filial
                 },
                 empenhos: this.rowsEmp,
                 resultados: this.rowsRes
             }
+            this.load = true
             axios.post('http://' + this.$restful + ':9988/app/opexecauto', res)
                 .then((response) => {
-                    alert("Op criada", response)
+                    console.log(response)
+                    this.load = false
                 }).catch(error => {
                     console.log(error);
+                    this.load = false
                 });
 
         },
@@ -130,8 +137,7 @@ export default {
             this.cab.local = payload.local.codigo
         },
         execfunct() {
-            console.log( this.cFilial)
-            axios.get('http://' + this.$restful + ':9988/app/locais/' + this.cFilial)
+            axios.get('http://' + this.$restful + ':9988/app/locais/' + this.cab.filial)
                 .then((response) => {
                     this.locais = response.data.data
                 }).catch(error => {
@@ -141,4 +147,42 @@ export default {
     }
 }
 </script>
-<style></style>
+<style scoped>
+.spin {
+    position: Absolute;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.lds-dual-ring {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+}
+
+.lds-dual-ring:after {
+    display: inline-block;
+    content: " ";
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    margin-top: 350px;
+    border-radius: 50%;
+    border: 6px solid #cef;
+    border-color: #cef transparent #cef transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+    z-index: 999;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}</style>
