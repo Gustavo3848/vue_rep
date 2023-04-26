@@ -18,7 +18,7 @@
                             </div>
                             <hr>
                             <div class="d-grid gap-1 mb-3">
-                                <input type="text" v-model="search">
+                                <input type="text" class="form-control" v-model="search">
                             </div>
                             <div class="row">
                                 <div class="col">
@@ -32,8 +32,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr @dblclick="select(lote)" v-for="lote in lotes"
-                                                :key="lote.produto + lote.lote">
+                                            <tr @dblclick="select(lote)" v-for="(lote) in filteredData"
+                                                :key="lote.lote + lote.produto">
                                                 <td>{{ lote.produto }}</td>
                                                 <td>{{ lote.lote }}</td>
                                                 <td class="text-end">{{ $filters.sldFilter(lote.saldo) }}</td>
@@ -56,14 +56,15 @@
     </div>
 </template>
 <script>
-
+import {computed,ref } from 'vue';
 export default {
     name: 'consultaPadrao',
     props: ["lotes"],
     data() {
         return {
             return: {
-                search: undefined || ""
+
+                itens: this.lotes
             }
         }
     },
@@ -80,9 +81,20 @@ export default {
             })
             this.close()
         }
-    }, computed: {
-
+    },
+    setup(props) {
+        const search = ref('')
+        const filteredData = computed(() => {
+            return props.lotes.filter(item => {
+                return item.lote.toLowerCase().includes(search.value.toLowerCase()) || item.produto.toLowerCase().includes(search.value.toLowerCase()) ;
+            });
+        });
+        return {
+            search,
+            filteredData
+        };
     }
+
 }
 </script>
 <style scoped>

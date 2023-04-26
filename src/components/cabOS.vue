@@ -60,10 +60,14 @@
     </div>
     <itensOS :emp="rowsEmp" :res="rowsRes" :filial="cab.filial" />
     <consultaLocais v-show="isModalVisible" @close="closeModal" @select="select" :locais="locais"></consultaLocais>
+    <msgError v-show="closeErro" @close="closeModal" :textError="textError"></msgError>
+    <msgSucess v-show="closeSucess" @close="closeModal" :op="textSucess"></msgSucess>
 </template>
 <script>
 import itensOS from './itensOS.vue'
 import consultaLocais from './consultaLocais.vue'
+import msgError from './msgError.vue'
+import msgSucess from './msgSucess.vue'
 import axios from 'axios'
 export default {
     name: 'cabOS',
@@ -84,39 +88,69 @@ export default {
             lotes: [],
             locais: [],
             isModalVisible: false,
-            load: false
-
+            load: false,
+            textError: [],
+            closeErro: false,
+            textSucess: "",
+            closeSucess: false
 
         }
     },
     components: {
         itensOS,
-        consultaLocais
+        consultaLocais,
+        msgError,
+        msgSucess
     },
     methods: {
         confirmar() {
-            var res = {
-                cab: {
-                    numeroOS: this.cab.numeroOS,
-                    local: this.cab.local,
-                    dtEmissao: this.convertDate(this.cab.dtEmissao),
-                    dtPrevisao: this.convertDate(this.cab.dtPrevisao),
-                    dtEntrega: this.convertDate(this.cab.dtEntrega),
-                    observacao: this.cab.observacao,
-                    filial: this.cab.filial
-                },
-                empenhos: this.rowsEmp,
-                resultados: this.rowsRes
+            if (this.validPost()) {
+                this.closeErro = true
+            } else {
+                var res = {
+                    cab: {
+                        numeroOS: this.cab.numeroOS,
+                        local: this.cab.local,
+                        dtEmissao: this.convertDate(this.cab.dtEmissao),
+                        dtPrevisao: this.convertDate(this.cab.dtPrevisao),
+                        dtEntrega: this.convertDate(this.cab.dtEntrega),
+                        observacao: this.cab.observacao,
+                        filial: this.cab.filial
+                    },
+                    empenhos: this.rowsEmp,
+                    resultados: this.rowsRes
+                }
+                this.load = true
+                axios.post('http://' + this.$restful + ':9988/app/opexecauto', res)
+                    .then((response) => {
+                        this.textSucess = response.data.data
+                        this.load = false
+                        this.closeSucess = true
+                        this.cab = {
+                            numeroOS: "",
+                            local: "",
+                            dtEmissao: "",
+                            dtPrevisao: "",
+                            dtEntrega: "",
+                            observacao: "",
+                            filial: ""
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                        this.textSucess = error
+                        this.cab = {
+                            numeroOS: "",
+                            local: "",
+                            dtEmissao: "",
+                            dtPrevisao: "",
+                            dtEntrega: "",
+                            observacao: "",
+                            filial: ""
+                        }
+                        this.closeSucess = true
+                        this.load = false
+                    });
             }
-            this.load = true
-            axios.post('http://' + this.$restful + ':9988/app/opexecauto', res)
-                .then((response) => {
-                    console.log(response)
-                    this.load = false
-                }).catch(error => {
-                    console.log(error);
-                    this.load = false
-                });
 
         },
         convertDate(date) {
@@ -132,6 +166,8 @@ export default {
         },
         closeModal() {
             this.isModalVisible = false;
+            this.closeErro = false;
+            this.closeSucess = false;
         },
         select(payload) {
             this.cab.local = payload.local.codigo
@@ -143,6 +179,80 @@ export default {
                 }).catch(error => {
                     console.log(error);
                 });
+
+        },
+        validPost() {
+            var lRet = false
+            this.textError = []
+            if (this.cab.filial == "") {
+                this.textError.push("Filial em branco!")
+                lRet = true
+            }
+            if (this.cab.local == "") {
+                this.textError.push("Local em branco!")
+                lRet = true
+            }
+            if (this.cab.dtEmissao == "") {
+                this.textError.push("Dt Emissão em branco!")
+                lRet = true
+            }
+            if (this.cab.dtPrevisao == "") {
+                this.textError.push("Dt Previsão em branco!")
+                lRet = true
+            }
+            if (this.cab.dtEntrega == "") {
+                this.textError.push("Dt Entrega em branco!")
+                lRet = true
+            }
+            if (this.rowsEmp.length > 0) {
+                this.rowsEmp.forEach(rows => {
+                    if (rows.produto == "") {
+                        this.textError.push("Produto em branco no empenho!")
+                        lRet = true
+                    }
+                    if (rows.lote == "") {
+                        this.textError.push("Lote em branco no empenho!")
+                        lRet = true
+                    }
+                    if (rows.local == "") {
+                        this.textError.push("Local em branco no empenho!")
+                        lRet = true
+                    }
+                    if (rows.quantidade <= 0) {
+                        this.textError.push("Quantidade inválida no empenho!")
+                        lRet = true
+                    }
+                });
+            } else {
+                this.textError.push("Não existe lotes de empenho informado!")
+                lRet = true
+            }
+
+            if (this.rowsRes.length > 0) {
+                this.rowsRes.forEach(rows => {
+                    if (rows.produto == "") {
+                        this.textError.push("Produto em branco no resultado!")
+                        lRet = true
+                    }
+                    if (rows.lote == "") {
+                        this.textError.push("Lote em branco no resultado!")
+                        lRet = true
+                    }
+                    if (rows.local == "") {
+                        this.textError.push("Local em branco no resultado!")
+                        lRet = true
+                    }
+                    if (rows.quantidade <= 0) {
+                        this.textError.push("Quantidade inválida no resultado!")
+                        lRet = true
+                    }
+                });
+            } else {
+                this.textError.push("Não existe lotes de resultado informado!")
+                lRet = true
+            }
+
+            return lRet
         }
     }
 }
@@ -185,4 +295,5 @@ export default {
     100% {
         transform: rotate(360deg);
     }
-}</style>
+}
+</style>
